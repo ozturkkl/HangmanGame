@@ -1,0 +1,58 @@
+<html>
+
+    <head>
+        <title>Hangman Game</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <main>
+            <h1>Hangman Game</h1>
+
+            <div id="nameScreen" >
+                <form id="difficultyForm" onsubmit="return false;">
+                    <h2>Hi, please select difficulty to begin...</h2>
+                    <label for="difficulty">
+                        Difficulty:
+                        <select type="text" id="difficulty">
+                            <option>Easy</option>
+                            <option>Medium</option>
+                            <option>Hard</option>
+                        </select>
+                    </label>
+                    <div>
+                        <button type="submit" class="button">Start!</button>
+                    </div>
+                </form>
+            </div>
+
+            
+
+            <div id="gameScreen" class="notActive" onsubmit="return false;">
+                <h2>Guess this word:</h2>
+                <h1 id="word"></h1>
+                <div id="youWin" class="notActive">
+                    <h1>You Win!</h1>
+                </div>
+                <div id="youLose" class="notActive">
+                    <h1>You Lost!</h1>
+                </div>
+                <form id="gameForm">
+                    <label for="gameInput" id="gameInputLabel">
+                        Try to guess a letter:
+                        <input type="text" id="gameInput" required>
+                    </label>
+                    <input type="submit" class="button" id="guessButton" value="Guess!">
+                    <button id="resetButton" class="button" type="button">Reset</button>
+                </form>                
+                <canvas id="canvas" height="300" width="500"></canvas>
+                <div id="scoreboardDiv">
+                    <h3 id="scoreboardText">Guesses:</h3>
+                </div>
+            </div>
+
+        </main>
+        <script src="index.js"></script>
+    </body>
+
+</html>
