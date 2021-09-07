@@ -22,125 +22,125 @@ let playerGuesses = [];
 class Hangman {
     round;
 
-    constructor(){
+    constructor() {
         this.round = 0;
         ctx.strokeStyle = "#fff";
-        ctx.fillStyle = "#fff"; 
-        ctx.lineWidth = 3;   
-        this.drawPole();   
+        ctx.fillStyle = "#fff";
+        ctx.lineWidth = 3;
+        this.drawPole();
     }
 
-    reset(){
+    reset() {
         this.round = 0;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.drawPole();
     }
 
     //Drawing functions
-    drawPole(){
+    drawPole() {
         ctx.beginPath();
         ctx.moveTo(50, 250);
         ctx.lineTo(200, 250);
         ctx.stroke();
         ctx.moveTo(125, 250);
         ctx.lineTo(125, 50);
-        ctx.stroke();        
+        ctx.stroke();
         ctx.moveTo(75, 50);
         ctx.lineTo(350, 50);
         ctx.lineTo(350, 75);
         ctx.stroke();
     }
-    drawHead(){
+    drawHead() {
         ctx.beginPath();
-        ctx.arc(350, 100, 25, 0, 2*Math.PI, true);
+        ctx.arc(350, 100, 25, 0, 2 * Math.PI, true);
         ctx.fill();
     }
-    drawTorso(){
-        ctx.beginPath();  
+    drawTorso() {
+        ctx.beginPath();
         ctx.moveTo(350, 125);
         ctx.lineTo(350, 190);
         ctx.stroke();
     }
-    drawLeftLeg(){
-        ctx.beginPath();  
+    drawLeftLeg() {
+        ctx.beginPath();
         ctx.moveTo(350, 190);
         ctx.lineTo(325, 215);
         ctx.stroke();
     }
-    drawRightLeg(){
-        ctx.beginPath();  
+    drawRightLeg() {
+        ctx.beginPath();
         ctx.moveTo(350, 190);
         ctx.lineTo(375, 215);
         ctx.stroke();
     }
-    drawLeftArm(){
-        ctx.beginPath();  
+    drawLeftArm() {
+        ctx.beginPath();
         ctx.moveTo(350, 145);
         ctx.lineTo(325, 155);
         ctx.stroke();
     }
 
-    drawRightArm(){
-        ctx.beginPath();  
+    drawRightArm() {
+        ctx.beginPath();
         ctx.moveTo(350, 145);
         ctx.lineTo(375, 155);
         ctx.stroke();
     }
-    draw(){
-        if (this.round >= 1){
+    draw() {
+        if (this.round >= 1) {
             this.drawHead();
         }
-        if (this.round >= 2){
+        if (this.round >= 2) {
             this.drawTorso();
         }
-        if (this.round >= 3){
+        if (this.round >= 3) {
             this.drawLeftArm();
         }
-        if (this.round >= 4){
+        if (this.round >= 4) {
             this.drawRightArm();
         }
-        if (this.round >= 5){
+        if (this.round >= 5) {
             this.drawLeftLeg();
         }
-        if (this.round >= 6){
+        if (this.round >= 6) {
             this.drawRightLeg();
         }
     }
 }
 
-function main (){
-
-    
-
+function main() {
     //Initial screen form event listener
-    difficultyForm.addEventListener("submit", function (event){
+    difficultyForm.addEventListener("submit", function (event) {
+        let wordsPool = []
+        if (difficulty.value === "Short") {
+            wordsPool = words.filter(word => word.length < 6)
+        }
+        if (difficulty.value === "Medium") {
+            wordsPool = words.filter(word => word.length >= 6 && word.length < 10)
+        }
+        if (difficulty.value === "Long") {
+            wordsPool = words.filter(word => word.length >= 10)
+        }
+
+        guessWord = wordsPool[Math.floor(Math.random() * wordsPool.length)];
+
+        guessWord = guessWord.toUpperCase();
+        guessWord = guessWord.split("");
+        playerWord = guessWord.map(x => x);
+
+
         nameScreen.classList.add("notActive");
         gameScreen.classList.remove("notActive");
 
-        var xhttp = new XMLHttpRequest();
-        let ready = false;
-
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-            guessWord = JSON.parse(this.responseText).word;
-            console.log(guessWord);
-            guessWord = guessWord.toUpperCase();
-            guessWord = guessWord.split("");
-            playerWord = guessWord.map(x => x);
-            
-            //Hiding the result from the player
-            playerWord.forEach((element, i) => playerWord[i] = "_");
-            screenWord.innerHTML = playerWord.join("");        
-            gameInput.focus();
-            }
-        };
-        xhttp.open("GET", `https://hangman-micro-service-bpblrjerwh.now.sh/?difficulty=${difficulty.value.toLowerCase()}`, true);
-        xhttp.send();
+        //Hiding the result from the player
+        playerWord.forEach((element, i) => playerWord[i] = "_");
+        screenWord.innerHTML = playerWord.join("");
+        gameInput.focus();
     });
 
     //Creating the game object
     const hangman = new Hangman();
-    
+
     //Game event listener
     gameForm.addEventListener("submit", function (event) {
         event.preventDefault;
@@ -149,9 +149,9 @@ function main (){
         playerGuesses.forEach((element, i) => playerGuesses[i] = playerGuesses[i].toUpperCase());
 
         //Check if it is a character
-        if (playerGuesses[playerGuesses.length-1].length != 1){
-            alert('Please enter a character instead!'); 
-            playerGuesses.pop();      
+        if (playerGuesses[playerGuesses.length - 1].length != 1) {
+            alert('Please enter a character instead!');
+            playerGuesses.pop();
             gameInput.value = "";
             return;
         }
@@ -159,9 +159,9 @@ function main (){
         //Check if already guessed the word
         let alreadyGuessed = false;
         playerGuesses.forEach((element, i) => {
-            if (playerGuesses[i] === playerGuesses[playerGuesses.length-1] && i != playerGuesses.length-1){
+            if (playerGuesses[i] === playerGuesses[playerGuesses.length - 1] && i != playerGuesses.length - 1) {
                 alert('Already guessed that word!');
-                playerGuesses.pop();        
+                playerGuesses.pop();
                 gameInput.value = "";
                 alreadyGuessed = true;
                 return;
@@ -172,27 +172,28 @@ function main (){
         //Check if the character is correct
         let trueGuess = false;
         guessWord.forEach((element, i) => {
-            if (guessWord[i] === playerGuesses[playerGuesses.length-1]){
+            if (guessWord[i] === playerGuesses[playerGuesses.length - 1]) {
                 gameInput.value = "";
                 trueGuess = true;
                 playerWord[i] = guessWord[i];
             }
         });
-        
+
         //Adding the result to the scoreboard
         const li = document.createElement('li');
-        li.innerText = playerGuesses[playerGuesses.length-1];
-        if (!trueGuess){
+        li.innerText = playerGuesses[playerGuesses.length - 1];
+        if (!trueGuess) {
             hangman.round++;
             hangman.draw();
         }
-        scoreboardDiv.appendChild(li);        
+        scoreboardDiv.appendChild(li);
         gameInput.value = "";
         screenWord.innerHTML = playerWord.join("");
 
         //Check end game            
-        if(hangman.round > 5) {
+        if (hangman.round > 5) {
             setTimeout(() => {
+                alert(`The word was ${guessWord}`)
                 document.querySelector('#youLose').classList.remove("notActive");
                 guessButton.classList.add("notActive");
                 gameInputLabel.classList.add("notActive");
@@ -201,11 +202,11 @@ function main (){
 
         let gameWon = true;
         guessWord.forEach((element, i) => {
-            if (guessWord[i] !== playerWord[i]){
+            if (guessWord[i] !== playerWord[i]) {
                 gameWon = false;
             }
         });
-        if(gameWon) {
+        if (gameWon) {
             setTimeout(() => {
                 document.querySelector('#youWin').classList.remove("notActive");
                 guessButton.classList.add("notActive");
@@ -215,7 +216,7 @@ function main (){
         gameInput.focus();
     });
 
-    resetButton.addEventListener('click', () => {        
+    resetButton.addEventListener('click', () => {
         gameScreen.classList.add("notActive");
         nameScreen.classList.remove("notActive");
         document.querySelector('#youWin').classList.add("notActive");
@@ -225,7 +226,7 @@ function main (){
 
         //Resetting the values
         hangman.reset();
-        for (let i = scoreboardDiv.childElementCount; i > 1 ; i--) scoreboardDiv.removeChild(scoreboardDiv.lastChild);
+        for (let i = scoreboardDiv.childElementCount; i > 1; i--) scoreboardDiv.removeChild(scoreboardDiv.lastChild);
         word.value = "";
         gameInput.value = "";
         playerGuesses = [];
